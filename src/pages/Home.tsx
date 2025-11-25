@@ -1,12 +1,5 @@
-import CodeEditor from '../components/CodeEditor.tsx';
-
 const Home = () => {
-  return (
-    <div>
-      Home page
-      <CodeEditor />
-    </div>
-  );
+  return <div>Home page</div>;
 };
 
 export default Home;
