@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "tailwindcss";
 
 @plugin "daisyui" {
@@ -24,6 +25,6 @@
 /*  -moz-osx-font-smoothing: grayscale;*/
 /*}*/
 
-* {
+:root {
   font-family: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }

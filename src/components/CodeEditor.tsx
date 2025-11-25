@@ -1,12 +1,7 @@
 import Editor from '@monaco-editor/react';
 import { useState } from 'react';
 
-const languageOptions = [
-  { label: 'JavaScript', value: 'javascript' },
-  { label: 'Python', value: 'python' },
-  { label: 'C++', value: 'cpp' },
-  { label: 'Java', value: 'java' },
-];
+import { languageOptions } from '../constants/code-editor.ts';
 
 const CodeEditor = () => {
   const [language, setLanguage] = useState('javascript');
@@ -39,14 +34,14 @@ const CodeEditor = () => {
         theme="vs-dark"
         language={language}
         value={code}
-        onChange={(v) => setCode(v)}
+        onChange={(v) => setCode(v ? v : '')}
         options={{
           minimap: { enabled: false },
           fontSize: 14,
           lineNumbers: 'on',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-
+          fontFamily: 'JetBrains Mono',
           quickSuggestions: false,
           suggestOnTriggerCharacters: false,
           parameterHints: { enabled: false },
