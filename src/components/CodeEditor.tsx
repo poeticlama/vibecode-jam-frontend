@@ -37,7 +37,7 @@ const CodeEditor = () => {
         onChange={(v) => setCode(v ? v : '')}
         options={{
           minimap: { enabled: false },
-          fontSize: 14,
+          fontSize: 16,
           lineNumbers: 'on',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
