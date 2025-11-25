@@ -27,11 +27,11 @@ export const router = createBrowserRouter([
     element: <AdminPanelPage />,
     children: [
       {
-        path: '/create',
+        path: 'create',
         element: <ExamFormPage />,
       },
       {
-        path: '/edit/:id',
+        path: 'edit/:id',
         element: <EditExamPage />,
       },
       {

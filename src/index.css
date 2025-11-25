@@ -7,8 +7,8 @@
     light --default,
     dark --prefersdark;
   root: ':root';
-  include:;
-  exclude:;
+  include: ;
+  exclude: ;
   prefix: '';
   logs: true;
 }
