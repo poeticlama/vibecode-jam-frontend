@@ -20,14 +20,18 @@ const CandidatesResults = ({ result }: CandidatesResultsProps) => {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <h4 className="text-base-content mb-2 font-semibold">Результаты тестов:</h4>
-          <div className="text-base-content rounded-lg bg-base-200 p-4 text-sm whitespace-pre-wrap">
+          <h4 className="text-base-content mb-2 font-semibold">
+            Результаты тестов:
+          </h4>
+          <div className="text-base-content bg-base-200 rounded-lg p-4 text-sm whitespace-pre-wrap">
             {result.testResults || 'Нет данных'}
           </div>
         </div>
         <div>
-          <h4 className="text-base-content mb-2 font-semibold">Результаты алгоритмов:</h4>
-          <div className="text-base-content rounded-lg bg-base-200 p-4 text-sm whitespace-pre-wrap">
+          <h4 className="text-base-content mb-2 font-semibold">
+            Результаты алгоритмов:
+          </h4>
+          <div className="text-base-content bg-base-200 rounded-lg p-4 text-sm whitespace-pre-wrap">
             {result.algorithmResults || 'Нет данных'}
           </div>
         </div>

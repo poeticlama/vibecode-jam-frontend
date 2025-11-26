@@ -4,8 +4,8 @@ import type { RootState } from '../index';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}`
-    : '/api',
+      ? `${import.meta.env.VITE_API_URL}`
+      : '/api',
   credentials: 'include', // при необходимости
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth?.token;

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import CodeEditor from '../../components/candidate/CodeEditor.tsx';
-import { useGetSessionByTokenQuery } from '../../store/api/endpoints/session.api.ts';
 import type { Question } from '../../types/sessions.ts';
+import {useGetSessionByTokenQuery} from "../../store/api/endpoints/public.api.ts";
 
 type Answer = {
   questionId: number;
@@ -16,7 +16,9 @@ const ExamPassingPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [timeRemaining, setTimeRemaining] = useState(3600); // 1 час по умолчанию
-  const [questionTimeRemaining, setQuestionTimeRemaining] = useState<number | null>(300); // 5 минут на вопрос
+  const [questionTimeRemaining, setQuestionTimeRemaining] = useState<
+    number | null
+  >(300); // 5 минут на вопрос
   const [isFinished, setIsFinished] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [currentCode, setCurrentCode] = useState('');
@@ -39,7 +41,9 @@ const ExamPassingPage = () => {
       return;
     }
 
-    const examStarted = localStorage.getItem(`exam_started_${candidateId || accessToken}`);
+    const examStarted = localStorage.getItem(
+      `exam_started_${candidateId || accessToken}`,
+    );
     if (examStarted !== 'true') {
       navigate(`/startExam/${candidateId || accessToken}`);
     }
@@ -52,7 +56,10 @@ const ExamPassingPage = () => {
     }
 
     // Подсчитываем общее количество вопросов
-    const totalQuestions = sessionData.tests.reduce((sum, test) => sum + test.questionCount, 0);
+    const totalQuestions = sessionData.tests.reduce(
+      (sum, test) => sum + test.questionCount,
+      0,
+    );
     // Устанавливаем общее время (например, 2 минуты на вопрос)
     setTimeRemaining(totalQuestions * 120);
   }, [sessionData]);
@@ -101,7 +108,14 @@ const ExamPassingPage = () => {
       });
       return prev;
     });
-  }, [isFinished, sessionData, currentQuestionIndex, currentAnswer, currentCode, candidateId]);
+  }, [
+    isFinished,
+    sessionData,
+    currentQuestionIndex,
+    currentAnswer,
+    currentCode,
+    candidateId,
+  ]);
 
   const handleSubmitAnswer = useCallback(() => {
     if (!sessionData) {
@@ -133,7 +147,13 @@ const ExamPassingPage = () => {
       // Все вопросы отвечены
       handleFinishExam();
     }
-  }, [sessionData, currentQuestionIndex, currentAnswer, currentCode, handleFinishExam]);
+  }, [
+    sessionData,
+    currentQuestionIndex,
+    currentAnswer,
+    currentCode,
+    handleFinishExam,
+  ]);
 
   // Общий таймер экзамена
   useEffect(() => {
@@ -173,7 +193,6 @@ const ExamPassingPage = () => {
     return () => clearInterval(interval);
   }, [sessionData, questionTimeRemaining, isFinished, handleSubmitAnswer]);
 
-
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -194,10 +213,12 @@ const ExamPassingPage = () => {
 
   if (error || !sessionData) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
+      <div className="bg-base-200 flex min-h-screen items-center justify-center px-4">
         <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
           <div className="card-body text-center">
-            <h2 className="text-error card-title justify-center text-2xl">Ошибка</h2>
+            <h2 className="text-error card-title justify-center text-2xl">
+              Ошибка
+            </h2>
             <p className="text-base-content/70">
               {'status' in (error as any)
                 ? `Ошибка загрузки данных экзамена (${(error as any).status})`
@@ -205,7 +226,9 @@ const ExamPassingPage = () => {
             </p>
             <div className="card-actions mt-4 justify-center">
               <button
-                onClick={() => navigate(`/startExam/${candidateId || accessToken}`)}
+                onClick={() =>
+                  navigate(`/startExam/${candidateId || accessToken}`)
+                }
                 className="btn btn-primary"
               >
                 Вернуться назад
@@ -220,17 +243,21 @@ const ExamPassingPage = () => {
   // Финишный стейт
   if (isFinished) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
+      <div className="bg-base-200 flex min-h-screen items-center justify-center px-4">
         <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
           <div className="card-body text-center">
-            <h2 className="text-success card-title justify-center text-2xl">Экзамен завершен!</h2>
+            <h2 className="text-success card-title justify-center text-2xl">
+              Экзамен завершен!
+            </h2>
             <p className="text-base-content/70">
               Спасибо за прохождение экзамена. Ваши ответы были сохранены.
             </p>
             <div className="card-actions mt-4 justify-center">
               <button
                 onClick={() => {
-                  localStorage.removeItem(`exam_started_${candidateId || accessToken}`);
+                  localStorage.removeItem(
+                    `exam_started_${candidateId || accessToken}`,
+                  );
                   localStorage.removeItem('exam_start_time');
                   navigate('/');
                 }}
@@ -254,12 +281,14 @@ const ExamPassingPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-base-200">
+    <div className="bg-base-200 flex min-h-screen flex-col">
       {/* Шапка с таймерами */}
       <div className="bg-base-100 border-b-base-300 sticky top-0 z-10 border-b p-4 shadow-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div>
-            <h1 className="text-primary text-xl font-bold">{sessionData.description}</h1>
+            <h1 className="text-primary text-xl font-bold">
+              {sessionData.description}
+            </h1>
             <p className="text-base-content/70 text-sm">
               Вопрос {currentQuestionIndex + 1} из {allQuestions.length}
             </p>
@@ -267,7 +296,9 @@ const ExamPassingPage = () => {
           <div className="flex gap-4">
             {questionTimeRemaining !== null && (
               <div className="text-center">
-                <div className="text-base-content/70 text-xs">Время на вопрос</div>
+                <div className="text-base-content/70 text-xs">
+                  Время на вопрос
+                </div>
                 <div className="text-warning text-lg font-bold">
                   {formatTime(questionTimeRemaining)}
                 </div>
@@ -275,7 +306,9 @@ const ExamPassingPage = () => {
             )}
             <div className="text-center">
               <div className="text-base-content/70 text-xs">Общее время</div>
-              <div className="text-primary text-lg font-bold">{formatTime(timeRemaining)}</div>
+              <div className="text-primary text-lg font-bold">
+                {formatTime(timeRemaining)}
+              </div>
             </div>
           </div>
         </div>
@@ -294,7 +327,9 @@ const ExamPassingPage = () => {
             <div className="space-y-3">
               {['A', 'B', 'C', 'D'].map((letter) => {
                 const optionKey = `option${letter}` as keyof Question;
-                const optionValue = currentQuestion[optionKey] as string | undefined;
+                const optionValue = currentQuestion[optionKey] as
+                  | string
+                  | undefined;
 
                 if (!optionValue) {
                   return null;
@@ -318,7 +353,8 @@ const ExamPassingPage = () => {
                       className="radio radio-primary mr-3"
                     />
                     <span className="text-base-content">
-                      <span className="font-semibold">{letter}.</span> {optionValue}
+                      <span className="font-semibold">{letter}.</span>{' '}
+                      {optionValue}
                     </span>
                   </label>
                 );

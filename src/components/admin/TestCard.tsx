@@ -10,7 +10,8 @@ const TestCard = ({ test }: TestCardProps) => {
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-base-content text-xl font-bold">{test.topic}</h3>
         <div className="badge badge-primary badge-lg">
-          {test.questionCount} {test.questionCount === 1 ? 'вопрос' : 'вопросов'}
+          {test.questionCount}{' '}
+          {test.questionCount === 1 ? 'вопрос' : 'вопросов'}
         </div>
       </div>
       <div className="text-base-content/70 text-sm">
@@ -56,4 +57,3 @@ const TestCard = ({ test }: TestCardProps) => {
 };
 
 export default TestCard;
-

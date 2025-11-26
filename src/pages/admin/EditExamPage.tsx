@@ -19,7 +19,8 @@ const useGetSession = (sessionId: string) => {
     const fetchSession = async () => {
       try {
         setIsLoading(true);
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+        const baseUrl =
+          import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
         // Исправляем: используем 'token' вместо 'authToken'
         const token = localStorage.getItem('token');
         const response = await fetch(`${baseUrl}/session/get/${sessionId}`, {
@@ -32,7 +33,7 @@ const useGetSession = (sessionId: string) => {
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(
-            `Failed to fetch session: ${response.status} ${response.statusText}. ${errorText}`
+            `Failed to fetch session: ${response.status} ${response.statusText}. ${errorText}`,
           );
         }
 
@@ -59,7 +60,8 @@ const EditExamPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sessionData, isLoading, error } = useGetSession(id || '');
 
-  const initialTasks = sessionData?.tests.flatMap((test: Test) => test.questions) || [];
+  const initialTasks =
+    sessionData?.tests.flatMap((test: Test) => test.questions) || [];
   const [tasks, setTasks] = useState<Question[]>(initialTasks);
   const [editingTask, setEditingTask] = useState<Question | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
@@ -67,7 +69,9 @@ const EditExamPage = () => {
   // Обновляем задачи при загрузке данных
   useEffect(() => {
     if (sessionData) {
-      const newTasks = sessionData.tests.flatMap((test: Test) => test.questions);
+      const newTasks = sessionData.tests.flatMap(
+        (test: Test) => test.questions,
+      );
       setTasks(newTasks);
     }
   }, [sessionData]);
@@ -83,7 +87,7 @@ const EditExamPage = () => {
 
   const handleSaveEdit = (updatedTask: Question) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+      prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)),
     );
     setEditingTask(null);
     setHasChanges(true);
@@ -107,10 +111,12 @@ const EditExamPage = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
+      <div className="bg-base-200 flex min-h-screen items-center justify-center px-4">
         <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
           <div className="card-body text-center">
-            <h2 className="text-error card-title justify-center text-2xl">Ошибка</h2>
+            <h2 className="text-error card-title justify-center text-2xl">
+              Ошибка
+            </h2>
             <p className="text-base-content/70">
               {error instanceof Error
                 ? error.message
@@ -142,7 +148,9 @@ const EditExamPage = () => {
     <div className="flex min-h-screen flex-col items-center px-4 py-8">
       {/* Заголовок и кнопка сохранения */}
       <div className="mb-6 flex w-full max-w-4xl items-center justify-between">
-        <h1 className="text-primary text-2xl font-bold">{sessionData.description}</h1>
+        <h1 className="text-primary text-2xl font-bold">
+          {sessionData.description}
+        </h1>
         <button
           onClick={handleSaveAll}
           disabled={!hasChanges}
@@ -169,7 +177,9 @@ const EditExamPage = () => {
       {/* Главный контейнер Edit exam */}
       <div className="border-base-300 bg-base-100 relative w-full max-w-4xl rounded-lg border p-6 shadow-lg">
         {/* Заголовок */}
-        <h2 className="text-primary mb-6 text-left text-xl font-bold">Изменить задания</h2>
+        <h2 className="text-primary mb-6 text-left text-xl font-bold">
+          Изменить задания
+        </h2>
 
         {/* Список задач */}
         <div className="mb-6 space-y-4">
@@ -229,7 +239,9 @@ const EditTaskModal = ({ task, onSave, onClose }: EditTaskModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-base-100 mx-4 w-full max-w-lg rounded-lg p-6 shadow-xl">
-        <h2 className="text-base-content mb-4 text-xl font-bold">Редактирование задания</h2>
+        <h2 className="text-base-content mb-4 text-xl font-bold">
+          Редактирование задания
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

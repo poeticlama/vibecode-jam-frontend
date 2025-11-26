@@ -1,23 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-
-import {
-  useGetSessionByTokenQuery,
-  useStartSessionMutation,
-} from '../../store/api/endpoints/session.api.ts';
+import {useStartSessionMutation} from "../../store/api/endpoints/public.api.ts";
 
 const StartExamPage = () => {
   const { candidateId } = useParams<{ candidateId: string }>();
   const [isStarted, setIsStarted] = useState(false);
   const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
-
-  const {
-    data: sessionData,
-    isLoading,
-    error,
-  } = useGetSessionByTokenQuery(candidateId || '', {
-    skip: !candidateId,
-  });
 
   useEffect(() => {
     if (!candidateId) {
@@ -61,75 +49,22 @@ const StartExamPage = () => {
       alert(
         `Ошибка начала экзамена: ${
           err?.data || err?.message || 'Неизвестная ошибка'
-        }`
+        }`,
       );
     }
   };
 
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    if (hours > 0) {
-      return `${hours} ч ${minutes} мин`;
-    }
-    return `${minutes} мин`;
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error('Ошибка загрузки сессии:', error);
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
-        <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
-          <div className="card-body text-center">
-            <h2 className="text-error card-title justify-center text-2xl">Ошибка доступа</h2>
-            <p className="text-base-content/70 mb-4">
-              {error && 'status' in error
-                ? `Ошибка загрузки данных экзамена (${error.status})`
-                : error && 'data' in error
-                  ? String(error.data)
-                  : 'Не удалось загрузить данные экзамена. Проверьте правильность ссылки.'}
-            </p>
-            <div className="text-base-content/50 text-sm">
-              <p>Access Token: {candidateId}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!sessionData && !isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
-        <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
-          <div className="card-body text-center">
-            <h2 className="text-error card-title justify-center text-2xl">Данные не найдены</h2>
-            <p className="text-base-content/70">
-              Не удалось загрузить данные экзамена. Проверьте правильность ссылки доступа.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (isStarted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-base-200 px-4">
+      <div className="bg-base-200 flex min-h-screen items-center justify-center px-4">
         <div className="bg-base-100 card w-full max-w-2xl shadow-xl">
           <div className="card-body">
-            <h2 className="text-primary card-title text-2xl">Экзамен уже начат</h2>
+            <h2 className="text-primary card-title text-2xl">
+              Экзамен уже начат
+            </h2>
             <p className="text-base-content/70">
-              Вы уже начали прохождение экзамена. Продолжите на странице экзамена.
+              Вы уже начали прохождение экзамена. Продолжите на странице
+              экзамена.
             </p>
             <div className="card-actions mt-4">
               <Link to="/exam" className="btn btn-primary">
@@ -142,47 +77,30 @@ const StartExamPage = () => {
     );
   }
 
-  // Подсчитываем общее количество вопросов
-  const totalQuestions = sessionData.tests.reduce((sum, test) => sum + test.questionCount, 0);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-base-200 px-4 py-8">
+    <div className="bg-base-200 flex min-h-screen items-center justify-center px-4 py-8">
       <div className="bg-base-100 card w-full max-w-3xl shadow-xl">
         <div className="card-body">
-          <h1 className="text-primary card-title mb-6 text-3xl">Информация об экзамене</h1>
+          <h1 className="text-primary card-title mb-6 text-3xl">
+            Информация об экзамене
+          </h1>
 
           <div className="space-y-4">
-            {/* Информация о кандидате */}
             <div className="border-base-300 rounded-lg border p-4">
-              <h3 className="text-base-content mb-2 font-semibold">Информация о кандидате</h3>
-              <p className="text-base-content/70">ID кандидата: {candidateId}</p>
-            </div>
-
-            {/* Название экзамена */}
-            <div className="border-base-300 rounded-lg border p-4">
-              <h3 className="text-base-content mb-2 font-semibold">Название экзамена</h3>
-              <p className="text-base-content/70">{sessionData.description}</p>
-            </div>
-
-            {/* Информация о тестах */}
-            <div className="border-base-300 rounded-lg border p-4">
-              <h3 className="text-base-content mb-2 font-semibold">Информация о тестах</h3>
-              <p className="text-base-content/70">
-                Количество тестов: {sessionData.tests.length}
-              </p>
-              <p className="text-base-content/70">Всего вопросов: {totalQuestions}</p>
-            </div>
-
-            {/* Правила экзамена */}
-            <div className="border-base-300 rounded-lg border p-4">
-              <h3 className="text-base-content mb-3 font-semibold">Правила экзамена</h3>
+              <h3 className="text-base-content mb-3 font-semibold">
+                Правила экзамена
+              </h3>
               <ul className="text-base-content/70 list-inside list-disc space-y-2">
                 <li>Нельзя переключать вкладки браузера</li>
-                <li>Нельзя выходить из браузера или открывать другие приложения</li>
+                <li>
+                  Нельзя выходить из браузера или открывать другие приложения
+                </li>
                 <li>Нельзя использовать консоль разработчика (F12)</li>
                 <li>Запрещено копирование и вставка текста</li>
                 <li>Запрещено открытие контекстного меню (правый клик)</li>
-                <li>При обнаружении нарушений экзамен будет автоматически завершен</li>
+                <li>
+                  При обнаружении нарушений экзамен будет автоматически завершен
+                </li>
                 <li>Время на каждый вопрос ограничено</li>
                 <li>Ответы отправляются автоматически при истечении времени</li>
               </ul>
@@ -204,8 +122,8 @@ const StartExamPage = () => {
                 />
               </svg>
               <span>
-                Внимание! После начала экзамена вы не сможете вернуться на эту страницу. Убедитесь,
-                что готовы начать.
+                Внимание! После начала экзамена вы не сможете вернуться на эту
+                страницу. Убедитесь, что готовы начать.
               </span>
             </div>
           </div>

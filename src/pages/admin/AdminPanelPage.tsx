@@ -20,7 +20,7 @@ const AdminPanelPage = () => {
         key={session.sessionId}
         cardTitle={session.description}
         id={session.sessionId}
-        className="carousel-item mx-3 w-80 flex-shrink-0"
+        className="carousel-item mx-3 w-96 flex-shrink-0"
       />
     )) || [];
 
@@ -33,7 +33,7 @@ const AdminPanelPage = () => {
 
     try {
       const session = await createSession({ description: examName }).unwrap();
-      navigate(`/admin/edit/${session.sessionId}`);
+      navigate(`/admin/create/${session.sessionId}`);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Failed to create session:', err);

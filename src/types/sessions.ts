@@ -12,7 +12,7 @@ export type AlgorithmTask = {
   descriptionRu: string;
   difficulty: string;
   assignedAt: string;
-}
+};
 
 export type Test = {
   testId: number;

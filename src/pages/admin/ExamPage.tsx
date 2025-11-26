@@ -74,7 +74,7 @@ const ExamPage = () => {
           <form onSubmit={handleCreateParticipant} className="flex gap-3">
             <input
               type="text"
-              className="input input-bordered flex-1 max-w-md"
+              className="input input-bordered max-w-md flex-1"
               placeholder="Введите имя участника"
               value={candidateName}
               onChange={(e) => setCandidateName(e.target.value)}
@@ -115,21 +115,26 @@ const ExamPage = () => {
                       {candidate.candidateName}
                     </span>
                     <span className="text-base-content/70 text-sm">
-                      Создано: {new Date(candidate.createdAt).toLocaleDateString('ru-RU')}
+                      Создано:{' '}
+                      {new Date(candidate.createdAt).toLocaleDateString(
+                        'ru-RU',
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <input
                       type="text"
                       readOnly
-                      value={candidate.accessUrl}
+                      value={`http://localhost:5173/startExam/${candidate.accessToken}`}
                       className="input input-bordered input-sm w-96"
                       onClick={(e) => (e.target as HTMLInputElement).select()}
                     />
                     <button
                       className="btn btn-sm btn-primary"
                       onClick={() => {
-                        navigator.clipboard.writeText(candidate.accessUrl);
+                        navigator.clipboard.writeText(
+                          `http://localhost:5173/startExam/${candidate.accessToken}`,
+                        );
                       }}
                     >
                       Копировать

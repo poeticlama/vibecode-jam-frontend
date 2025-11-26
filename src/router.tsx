@@ -6,7 +6,6 @@ import EditExamPage from './pages/admin/EditExamPage.tsx';
 import ExamFormPage from './pages/admin/ExamFormPage.tsx';
 import ExamPage from './pages/admin/ExamPage.tsx';
 import LoginPage from './pages/admin/LoginPage.tsx';
-import ResultsPage from './pages/admin/ResultsPage.tsx';
 import ExamPassingPage from './pages/candidate/ExamPassingPage.tsx';
 import StartExamPage from './pages/candidate/StartExamPage.tsx';
 
@@ -32,7 +31,7 @@ export const router = createBrowserRouter([
         element: <AdminPanelPage />,
       },
       {
-        path: 'create',
+        path: 'create/:id',
         element: <ExamFormPage />,
       },
       {
@@ -42,10 +41,6 @@ export const router = createBrowserRouter([
       {
         path: 'exam/:id',
         element: <ExamPage />,
-      },
-      {
-        path: 'results/:id',
-        element: <ResultsPage />,
       },
     ],
   },

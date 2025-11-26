@@ -12,8 +12,11 @@ import {
 const ExamFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: topics, isLoading: topicsLoading } = useGetTopicsQuery();
-  const { data: session, isError: sessionError, isLoading: sessionLoading } =
-    useGetSessionQuery(id || '');
+  const {
+    data: session,
+    isError: sessionError,
+    isLoading: sessionLoading,
+  } = useGetSessionQuery(id || '');
   const [createTest, { isLoading: isCreatingTest }] = useCreateTestMutation();
   const [createRandomAlgorithmTask, { isLoading: isCreatingAlgorithmTask }] =
     useCreateRandomAlgorithmTaskMutation();
@@ -62,7 +65,9 @@ const ExamFormPage = () => {
 
       {/* Добавление вопросов по темам */}
       <div className="mb-10">
-        <h2 className="mb-3 text-lg font-semibold">Добавить вопросы по темам:</h2>
+        <h2 className="mb-3 text-lg font-semibold">
+          Добавить вопросы по темам:
+        </h2>
         {isCreatingTest ? (
           <div className="flex items-center justify-center py-8">
             <span className="loading loading-dots loading-xl"></span>
@@ -89,7 +94,9 @@ const ExamFormPage = () => {
 
       {/* Добавление алгоритмического задания */}
       <div className="mb-10">
-        <h2 className="mb-3 text-lg font-semibold">Добавить алгоритмическое задание:</h2>
+        <h2 className="mb-3 text-lg font-semibold">
+          Добавить алгоритмическое задание:
+        </h2>
         {isCreatingAlgorithmTask ? (
           <div className="flex items-center justify-center py-8">
             <span className="loading loading-dots loading-xl"></span>
@@ -108,7 +115,7 @@ const ExamFormPage = () => {
       {/* Тестовые задания */}
       {session?.tests && session.tests.length > 0 && (
         <div className="mb-10">
-          <div className="collapse collapse-plus bg-base-200">
+          <div className="collapse-plus bg-base-200 collapse">
             <input type="checkbox" />
             <div className="collapse-title text-primary text-xl font-bold">
               Тестовые задания ({session.tests.length})
@@ -127,7 +134,7 @@ const ExamFormPage = () => {
       {/* Алгоритмические задания */}
       {session?.algorithmTasks && session.algorithmTasks.length > 0 && (
         <div className="mb-10">
-          <div className="collapse collapse-plus bg-base-200">
+          <div className="collapse-plus bg-base-200 collapse">
             <input type="checkbox" />
             <div className="collapse-title text-primary text-xl font-bold">
               Алгоритмические задания ({session.algorithmTasks.length})
@@ -147,7 +154,8 @@ const ExamFormPage = () => {
       {(!session?.tests || session.tests.length === 0) &&
         (!session?.algorithmTasks || session.algorithmTasks.length === 0) && (
           <div className="text-base-content/60 py-10 text-center">
-            Пока нет добавленных заданий. Выберите тему выше, чтобы добавить вопросы.
+            Пока нет добавленных заданий. Выберите тему выше, чтобы добавить
+            вопросы.
           </div>
         )}
     </div>
