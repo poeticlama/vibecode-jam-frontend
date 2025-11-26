@@ -24,7 +24,7 @@ const CandidatesResults = ({ result }: CandidatesResultsProps) => {
             Результаты тестов:
           </h4>
           <div className="text-base-content bg-base-200 rounded-lg p-4 text-sm whitespace-pre-wrap">
-            {result.testResults || 'Нет данных'}
+            {result.testResults + "%" || 'Нет данных'}
           </div>
         </div>
         <div>
@@ -32,7 +32,7 @@ const CandidatesResults = ({ result }: CandidatesResultsProps) => {
             Результаты алгоритмов:
           </h4>
           <div className="text-base-content bg-base-200 rounded-lg p-4 text-sm whitespace-pre-wrap">
-            {result.algorithmResults || 'Нет данных'}
+            {result.algorithmResults + "%" || 'Нет данных'}
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ const ExamCard = ({ cardTitle, id, className }: ExamCardProps) => {
         <h2 className="card-title text-neutral">{cardTitle}</h2>
         <div className="card-actions mt-5 flex flex-row gap-2">
           <Link className="btn btn-primary flex-1" to={`/admin/exam/${id}`}>
-            Результаты
+            Участники
           </Link>
           <Link className="btn btn-secondary flex-1" to={`/admin/create/${id}`}>
             Редактировать
