@@ -1,5 +1,9 @@
 // import { useParams } from 'react-router-dom';
 
+import { Link } from 'react-router';
+
+import CandidatesResults from '../../components/admin/CandidatesResultsCard.tsx';
+
 const ExamPage = () => {
   // const { id } = useParams();
   const session = mock_session;
@@ -9,6 +13,27 @@ const ExamPage = () => {
       <h1 className="text-primary mb-10 text-3xl font-bold">
         {session.description}
       </h1>
+      <div className="flex flex-col justify-between md:flex-row">
+        <div className="flex flex-col items-center">
+          <div className="bg-neutral-content mb-7 flex h-70 w-100 items-center justify-center rounded-xl">
+            Настройки
+          </div>
+          <Link
+            className="btn btn-primary mb-3 w-fit"
+            to={`/admin/edit/${session.sessionId}`}
+          >
+            Редактировать задания
+          </Link>
+          <button className="btn btn-error w-fit">
+            Сбросить списки участников
+          </button>
+        </div>
+        <div className="flex w-full flex-col items-center">
+          {[1, 2, 3, 4, 5].map(() => (
+            <CandidatesResults />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
