@@ -18,11 +18,13 @@ export default defineConfig([
   ]),
 
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx}'],
 
     extends: [
       js.configs.recommended,
-      ...tseslint.configs.recommended,
+      tseslint.configs.recommendedTypeChecked,
+      tseslint.configs.strictTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
       tsPrefixer,
@@ -39,6 +41,10 @@ export default defineConfig([
       parser: tseslint.parser,
       globals: {
         ...globals.browser,
+      },
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
       },
     },
 

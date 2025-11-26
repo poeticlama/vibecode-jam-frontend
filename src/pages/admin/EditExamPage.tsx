@@ -1,14 +1,49 @@
-import TaskCard from '../../components/admin/TaskCard.tsx';
+import { useState } from 'react';
+
+import TaskCard, { type Question } from '../../components/admin/TaskCard.tsx';
 
 const EditExamPage = () => {
   const session = mock_session;
-  const tasks = session.tests.map((test) => test.questions).flat();
+  const initialTasks = session.tests.map((test) => test.questions).flat();
+
+  const [tasks] = useState<Question[]>(initialTasks);
+
+  const handleEdit = () => {
+    // Пустой хэндлер
+  };
+
+  const handleDelete = () => {
+    // Пустой хэндлер
+  };
 
   return (
-    <div className="flex flex-col items-center">
-      {tasks.map((task, index) => (
-        <TaskCard task={task} index={index} />
-      ))}
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+      {/* Главный контейнер Edit exam */}
+      <div className="border-base-300 bg-base-100 relative w-full max-w-4xl rounded-lg border p-6 shadow-lg">
+        {/* Заголовок */}
+        <h1 className="text-primary mb-6 text-left text-2xl font-bold">
+          Изменить задания
+        </h1>
+
+        {/* Список задач */}
+        <div className="mb-6 space-y-4">
+          {tasks.map((task, index) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              index={index}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+
+          {tasks.length === 0 && (
+            <div className="text-base-content/60 py-10 text-center">
+              Нет задач для отображения
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
