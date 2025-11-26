@@ -15,7 +15,7 @@ const AdminPanelPage = () => {
     <div className="h-full w-full px-3 py-10 md:px-10 lg:px-20">
       <h1 className="text-primary text-3xl font-bold">Панель администратора</h1>
       <Link className="btn btn-primary mt-15 mb-10 ml-4" to="create">
-        + Создать экзамен
+        + Создать тестовое задание
       </Link>
       <div className="carousel bg-base-200 w-full rounded-xl py-10">
         {examCards}

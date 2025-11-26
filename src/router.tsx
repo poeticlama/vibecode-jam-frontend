@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router';
 
+import PrivateRoute from './components/admin/PrivateRoute.tsx';
 import AdminPanelPage from './pages/admin/AdminPanelPage.tsx';
 import EditExamPage from './pages/admin/EditExamPage.tsx';
 import ExamFormPage from './pages/admin/ExamFormPage.tsx';
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
+    element: <PrivateRoute />,
     children: [
       {
         path: '',
