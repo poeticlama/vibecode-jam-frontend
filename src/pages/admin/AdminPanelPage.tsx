@@ -17,7 +17,9 @@ const AdminPanelPage = () => {
       <Link className="btn btn-primary mt-15 mb-10 ml-4" to="create">
         + Создать экзамен
       </Link>
-      <div className="carousel bg-base-200 w-full py-10">{examCards}</div>
+      <div className="carousel bg-base-200 w-full rounded-xl py-10">
+        {examCards}
+      </div>
     </div>
   );
 };

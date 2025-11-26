@@ -1,22 +1,14 @@
 // import { useParams } from 'react-router-dom';
 
-import TaskCard from '../../components/admin/TaskCard.tsx';
-
 const ExamPage = () => {
   // const { id } = useParams();
   const session = mock_session;
-  const tasks = mock_session.tests.map((test) => test.questions).flat();
 
   return (
     <div className="h-full w-full px-3 py-10 md:px-10 lg:px-20">
       <h1 className="text-primary mb-10 text-3xl font-bold">
         {session.description}
       </h1>
-      <div className="flex flex-col items-center">
-        {tasks.map((task, index) => (
-          <TaskCard task={task} index={index} />
-        ))}
-      </div>
     </div>
   );
 };
