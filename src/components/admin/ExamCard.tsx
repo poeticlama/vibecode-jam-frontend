@@ -10,7 +10,7 @@ const ExamCard = ({ cardTitle, id, className }: ExamCardProps) => {
   return (
     <div
       className={'card bg-neutral-content card-xl shadow-sm' + className}
-      id={id}
+      key={id}
     >
       <div className="card-body flex flex-col justify-between">
         <h2 className="card-title text-neutral">{cardTitle}</h2>
