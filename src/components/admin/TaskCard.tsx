@@ -29,7 +29,7 @@ const TaskCard = ({ task, index, onEdit, onDelete }: TaskCardProps) => {
       {/* Заголовок задания */}
       <div className="mb-3">
         <h3 className="text-base-content text-center text-lg font-semibold">
-          Task {index + 1}
+          Задание {index + 1}
         </h3>
       </div>
 
@@ -72,7 +72,7 @@ const TaskCard = ({ task, index, onEdit, onDelete }: TaskCardProps) => {
               className="btn btn-outline btn-sm border-error text-error hover:bg-error hover:text-error-content"
               title="Удалить"
             >
-              delete
+              Удалить
             </button>
           )}
           {onEdit && (
@@ -81,7 +81,7 @@ const TaskCard = ({ task, index, onEdit, onDelete }: TaskCardProps) => {
               className="btn btn-outline btn-sm border-success text-success hover:bg-success hover:text-success-content"
               title="Редактировать"
             >
-              edit
+              Редактировать
             </button>
           )}
         </div>
