@@ -1,6 +1,7 @@
 import { baseApi } from '../baseApi';
 
 type LoginRequest = { username: string; password: string };
+
 type LoginResponse = string | { token: string };
 
 export const authApi = baseApi.injectEndpoints({

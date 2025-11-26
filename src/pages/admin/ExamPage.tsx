@@ -1,25 +1,39 @@
-// import { useParams } from 'react-router-dom';
-
+import { useParams } from 'react-router';
 import { Link } from 'react-router';
 
 import CandidatesResults from '../../components/admin/CandidatesResultsCard.tsx';
+import { useGetAllSessionsQuery } from '../../store/api/endpoints/session.api.ts';
 
 const ExamPage = () => {
-  // const { id } = useParams();
-  const session = mock_session;
+  const { id } = useParams<{ id: string }>();
+  const { data: sessions, isLoading } = useGetAllSessionsQuery();
+  const session = sessions?.find((s) => s.sessionId === id);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <span className="loading loading-spinner loading-xl"></span>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-neutral text-lg">Сессия не найдена</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full px-3 py-10 md:px-10 lg:px-20">
       <h1 className="text-primary mb-10 text-3xl font-bold">
         {session.description}
       </h1>
-      <div className="flex flex-col justify-between md:flex-row">
-        <div className="flex flex-col items-center">
-          <div className="bg-neutral-content mb-7 flex h-70 w-100 items-center justify-center rounded-xl">
-            Настройки
-          </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col items-center gap-3">
           <Link
-            className="btn btn-primary mb-3 w-fit"
+            className="btn btn-primary w-fit"
             to={`/admin/edit/${session.sessionId}`}
           >
             Редактировать задания
@@ -28,76 +42,14 @@ const ExamPage = () => {
             Сбросить списки участников
           </button>
         </div>
-        <div className="flex w-full flex-col items-center">
-          {[1, 2, 3, 4, 5].map(() => (
-            <CandidatesResults />
+        <div className="flex w-full flex-col items-center gap-5">
+          {[1, 2, 3, 4, 5].map((_, index) => (
+            <CandidatesResults key={index} />
           ))}
         </div>
       </div>
     </div>
   );
-};
-
-const mock_session = {
-  sessionId: '8f5e631d-3d26-4da6-b234-5a2c0520db75',
-  description: 'Собеседование на Junior Backend',
-  createdAt: '2025-11-26T11:00:24.508893',
-  tests: [
-    {
-      testId: 2,
-      sessionId: '8f5e631d-3d26-4da6-b234-5a2c0520db75',
-      topic: 'BACKEND',
-      questionCount: 5,
-      createdAt: '2025-11-26T11:02:19.357789',
-      questions: [
-        {
-          id: 6,
-          text: 'Какой из следующих вариантов НЕ является типом коллекции в Java?',
-          optionA: 'ArrayList',
-          optionB: 'LinkedList',
-          optionC: 'HashSet',
-          optionD: 'TreeMap',
-          correctAnswer: 'd',
-        },
-        {
-          id: 7,
-          text: 'Что означает аббревиатура REST в контексте HTTP-сервисов?',
-          optionA: 'Representational State Transfer',
-          optionB: 'Resource State Transfer',
-          optionC: 'Remote Service Technology',
-          optionD: 'Resource State Transport',
-          correctAnswer: 'a',
-        },
-        {
-          id: 8,
-          text: 'Какой аннотацией помечается класс в Spring, чтобы он автоматически создавался как бин?',
-          optionA: '@Component',
-          optionB: '@Service',
-          optionC: '@Repository',
-          optionD: '@Entity',
-          correctAnswer: 'a',
-        },
-        {
-          id: 9,
-          text: 'Какой аннотацией помечается метод в Spring MVC, чтобы он обрабатывал GET-запросы?',
-          optionA: '@GetMapping',
-          optionB: '@PostMapping',
-          optionC: '@PutMapping',
-          optionD: '@DeleteMapping',
-          correctAnswer: 'a',
-        },
-        {
-          id: 10,
-          text: 'Какой аннотацией в JPA помечается поле, чтобы оно стало первичным ключом с автоматической генерацией значений?',
-          optionA: '@GeneratedValue',
-          optionB: '@Id',
-          optionC: '@Column',
-          optionD: '@OneToOne',
-          correctAnswer: 'a',
-        },
-      ],
-    },
-  ],
 };
 
 export default ExamPage;

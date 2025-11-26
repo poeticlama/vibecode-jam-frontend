@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
         element: <AdminPanelPage />,
       },
       {
-        path: 'create',
+        path: 'create/:id',
         element: <ExamFormPage />,
       },
       {
