@@ -1,7 +1,7 @@
 import Editor from '@monaco-editor/react';
 import { useState } from 'react';
 
-import { languageOptions } from '../constants/code-editor.ts';
+import { languageOptions } from '../../constants/code-editor.ts';
 
 const CodeEditor = () => {
   const [language, setLanguage] = useState('javascript');
