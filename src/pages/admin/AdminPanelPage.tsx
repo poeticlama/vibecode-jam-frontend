@@ -33,8 +33,9 @@ const AdminPanelPage = () => {
 
     try {
       const session = await createSession({ description: examName }).unwrap();
-      navigate(`/admin/create/${session.sessionId}`);
+      navigate(`/admin/edit/${session.sessionId}`);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Failed to create session:', err);
     }
   };

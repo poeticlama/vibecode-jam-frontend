@@ -1,25 +1,48 @@
 import Editor from '@monaco-editor/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { languageOptions } from '../../constants/code-editor.ts';
 
-const CodeEditor = () => {
-  const [language, setLanguage] = useState('javascript');
-  const [code, setCode] = useState(`// Напишите ваш код здесь`);
+type CodeEditorProps = {
+  initialCode?: string;
+  language?: string;
+  onChange?: (code: string) => void;
+  height?: string;
+  readOnly?: boolean;
+};
+
+const CodeEditor = ({
+  initialCode = '// Напишите ваш код здесь',
+  language = 'javascript',
+  onChange,
+  height = '400px',
+  readOnly = false,
+}: CodeEditorProps) => {
+  const [currentLanguage, setCurrentLanguage] = useState(language);
+  const [code, setCode] = useState(initialCode);
+
+  useEffect(() => {
+    setCode(initialCode);
+  }, [initialCode]);
+
+  useEffect(() => {
+    setCurrentLanguage(language);
+  }, [language]);
+
+  const handleCodeChange = (value: string | undefined) => {
+    const newCode = value || '';
+    setCode(newCode);
+    onChange?.(newCode);
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div style={{ padding: '10px', background: '#222', color: '#fff' }}>
+    <div className="flex flex-col">
+      <div className="bg-base-300 flex items-center justify-between rounded-t-lg p-2">
         <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          style={{
-            padding: 6,
-            borderRadius: 6,
-            border: 'none',
-            background: '#333',
-            color: 'white',
-          }}
+          value={currentLanguage}
+          onChange={(e) => setCurrentLanguage(e.target.value)}
+          disabled={readOnly}
+          className="select select-bordered select-sm w-40"
         >
           {languageOptions.map((l) => (
             <option key={l.value} value={l.value}>
@@ -29,28 +52,34 @@ const CodeEditor = () => {
         </select>
       </div>
 
-      <Editor
-        height="100%"
-        theme="vs-dark"
-        language={language}
-        value={code}
-        onChange={(v) => setCode(v ? v : '')}
-        options={{
-          minimap: { enabled: false },
-          fontSize: 16,
-          lineNumbers: 'on',
-          scrollBeyondLastLine: false,
-          wordWrap: 'on',
-          fontFamily: 'JetBrains Mono',
-          quickSuggestions: false,
-          suggestOnTriggerCharacters: false,
-          parameterHints: { enabled: false },
-          wordBasedSuggestions: 'off',
-          tabCompletion: 'off',
-        }}
-      />
+      <div className="border-base-300 rounded-b-lg border border-t-0">
+        <Editor
+          height={height}
+          theme="vs-dark"
+          language={currentLanguage}
+          value={code}
+          onChange={handleCodeChange}
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            lineNumbers: 'on',
+            scrollBeyondLastLine: false,
+            wordWrap: 'on',
+            fontFamily: 'JetBrains Mono, monospace',
+            quickSuggestions: false,
+            suggestOnTriggerCharacters: false,
+            parameterHints: { enabled: false },
+            wordBasedSuggestions: 'off',
+            tabCompletion: 'off',
+            readOnly,
+            contextmenu: false,
+            copyWithSyntaxHighlighting: false,
+          }}
+        />
+      </div>
     </div>
   );
 };
 
 export default CodeEditor;
+
