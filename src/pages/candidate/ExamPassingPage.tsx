@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
 import CodeEditor from '../../components/candidate/CodeEditor.tsx';
+import { useViolationDetection } from '../../hooks/useViolationDetection.ts';
 import type { AlgorithmTask, Question } from '../../types/sessions.ts';
 import {
   useCheckCodeMutation,
@@ -49,6 +50,8 @@ const ExamPassingPage = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [checkCodeResults, setCheckCodeResults] = useState<Record<string, any>>({});
   const [currentLanguage, setCurrentLanguage] = useState('python');
+  const [resultsSent, setResultsSent] = useState(false);
+  const lastCheckedTaskRef = useRef<string | number | null>(null);
 
   const candidateId = localStorage.getItem('candidateId');
   const accessToken = localStorage.getItem('accessToken') || candidateId;
@@ -63,6 +66,7 @@ const ExamPassingPage = () => {
 
   const [checkCode, { isLoading: isCheckingCode }] = useCheckCodeMutation();
   const [sendResults] = useSendResultsMutation();
+  const violationDetected = useViolationDetection(!resultsSent);
 
   // Загрузка состояния из localStorage
   useEffect(() => {
@@ -247,7 +251,7 @@ const ExamPassingPage = () => {
     // Не сбрасываем результаты проверки кода при переходе к следующему заданию
   }, [currentAnswer, tasks.length]);
 
-  const handleCheckCode = async (task: AlgorithmTask, code: string, language: string) => {
+  const handleCheckCode = useCallback(async (task: AlgorithmTask, code: string, language: string) => {
     try {
       const languageMap: Record<string, 'PYTHON' | 'JAVA' | 'JS' | 'CPP'> = {
         python: 'PYTHON',
@@ -263,9 +267,25 @@ const ExamPassingPage = () => {
       }).unwrap();
 
       setCheckCodeResults((prev) => {
+        const prevResult = prev[task.taskId];
+        // Сохраняем лучший результат - тот, у которого больше пройденных тестов
+        let bestResult = result;
+        if (prevResult && prevResult.results && result.results) {
+          const prevPassed = prevResult.results.filter(
+            (r: any) => r.status === 'PASSED' || r.status === 'passed'
+          ).length;
+          const currentPassed = result.results.filter(
+            (r: any) => r.status === 'PASSED' || r.status === 'passed'
+          ).length;
+          // Используем результат с большим количеством пройденных тестов
+          if (prevPassed > currentPassed) {
+            bestResult = prevResult;
+          }
+        }
+        
         const updated = {
           ...prev,
-          [task.taskId]: result,
+          [task.taskId]: bestResult,
         };
         // Сохранение результатов проверки в localStorage
         if (accessToken) {
@@ -276,7 +296,7 @@ const ExamPassingPage = () => {
     } catch (err) {
       console.error('Failed to check code:', err);
     }
-  };
+  }, [checkCode, accessToken]);
 
   // Обновление текущего ответа при смене задания
   useEffect(() => {
@@ -299,11 +319,25 @@ const ExamPassingPage = () => {
 
     if (savedAnswer) {
       setCurrentAnswer(savedAnswer.answer);
+      
+      // Автоматически запускаем тесты для алгоритмического задания при переходе к нему
+      // Только если это новое задание (не запускали тесты ранее)
+      if (
+        currentTask.type === 'algorithm' &&
+        currentTask.algorithmTask &&
+        savedAnswer.answer.trim() &&
+        lastCheckedTaskRef.current !== currentTask.id
+      ) {
+        lastCheckedTaskRef.current = currentTask.id;
+        handleCheckCode(currentTask.algorithmTask, savedAnswer.answer, currentLanguage);
+      }
     } else {
       setCurrentAnswer('');
+      // Сбрасываем ссылку при переходе к заданию без сохраненного ответа
+      lastCheckedTaskRef.current = null;
     }
     // Не сбрасываем результаты проверки кода, они нужны для финального расчета
-  }, [currentTaskIndex, tasks, answers]);
+  }, [currentTaskIndex, tasks, answers, currentLanguage, handleCheckCode]);
 
   // Автоматическое сохранение при истечении времени
   useEffect(() => {
@@ -364,15 +398,14 @@ const ExamPassingPage = () => {
       ? Math.round((passedTests / totalTests) * 100).toString()
       : '0';
 
-    // Проверка на нарушения (можно добавить логику детекции)
-    const violationDetected = 'false';
+    // Используем флаг из хука отслеживания нарушений
 
     return {
       testPercentage,
       algorithmPercentage,
-      violationDetected,
+      violationDetected: violationDetected ? 'true' : 'false',
     };
-  }, [sessionData, answers, checkCodeResults]);
+  }, [sessionData, answers, checkCodeResults, violationDetected]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -382,7 +415,7 @@ const ExamPassingPage = () => {
 
   // Отправка результатов при завершении
   useEffect(() => {
-    if (!isFinished || !sessionData || !accessToken) {
+    if (!isFinished || !sessionData || !accessToken || resultsSent) {
       return;
     }
 
@@ -393,10 +426,14 @@ const ExamPassingPage = () => {
       testResults: results.testPercentage,
       algorithmResults: results.algorithmPercentage,
       violationDetected: results.violationDetected,
-    }).catch((err) => {
-      console.error('Failed to send results:', err);
-    });
-  }, [isFinished, sessionData, accessToken, calculateResults, sendResults]);
+    })
+      .then(() => {
+        setResultsSent(true);
+      })
+      .catch((err) => {
+        console.error('Failed to send results:', err);
+      });
+  }, [isFinished, sessionData, accessToken, calculateResults, sendResults, resultsSent]);
 
   if (isLoading) {
     return (
@@ -574,13 +611,14 @@ const ExamPassingPage = () => {
                   Сохранить код и перейти дальше
                 </button>
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          lastCheckedTaskRef.current = currentTask.id;
                           handleCheckCode(
                             currentTask.algorithmTask!,
                             currentAnswer,
                             currentLanguage,
-                          )
-                        }
+                          );
+                        }}
                         disabled={!currentAnswer.trim() || timeRemaining === 0 || isCheckingCode}
                         className="btn btn-secondary"
                       >

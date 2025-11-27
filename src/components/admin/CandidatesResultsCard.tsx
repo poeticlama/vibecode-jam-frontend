@@ -12,7 +12,7 @@ const CandidatesResults = ({ result }: CandidatesResultsProps) => {
           {result.candidateName}
         </h3>
         {result.violationDetected && (
-          <div className="badge badge-error badge-lg">Нарушение обнаружено</div>
+          <div className="badge badge-error badge-lg">Нарушение правил</div>
         )}
       </div>
       <div className="text-base-content/70 mb-4 text-sm">
